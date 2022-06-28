@@ -18,8 +18,10 @@ apply from: './repositories.gradle'
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	
-    implementation 'org.casbin:jcasbin:1.22.6'
+
+    // casbin
+	implementation 'org.casbin:casbin-spring-boot-starter:0.4.1'
+    // implementation 'org.casbin:jcasbin:1.22.6'
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
