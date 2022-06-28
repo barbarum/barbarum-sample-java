@@ -7,6 +7,8 @@ import com.barbarum.sample.config.CasbinConfig;
 
 import java.io.FileNotFoundException;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import org.casbin.jcasbin.main.Enforcer;
@@ -67,5 +69,27 @@ public class CasbinTest {
         assertTrue(enforcer.enforce(user, "domain", "write"));
         assertTrue(enforcer.enforce(user, "metrics", "read"));
         assertTrue(enforcer.enforce(user, "atomic_metrics", "write"));
+    }
+
+    @Test
+    public void testAbac() throws FileNotFoundException {
+
+        CasbinConfig.Config abac = this.config.getAbac(); 
+        Enforcer enforcer = new Enforcer(abac.getModelPath(), abac.getPolicyPath(), false);
+
+        User ming = new User("Ming", 18);
+        assertTrue(enforcer.enforce(ming, "/news/rumors", "read"));
+        
+        User mary = new User("Mary", 12);
+        assertFalse(enforcer.enforce(mary, "/news/rumors", "read"));
+    }
+
+    @Data
+    @AllArgsConstructor
+    private class User {
+
+        private String name; 
+
+        private int age;
     }
 }

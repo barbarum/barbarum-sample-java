@@ -1,0 +1,3 @@
+
+# Only the user's age is great than 18 to access these news.
+p, r.subject.age >= 18, /news/rumors, read
