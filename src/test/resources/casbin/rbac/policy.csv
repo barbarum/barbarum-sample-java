@@ -1,0 +1,4 @@
+p, admin, domain, read
+p, admin, domain, write
+
+g, Ming, admin

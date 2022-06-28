@@ -1,0 +1,17 @@
+# Role user -> Resource Access
+p, user, domain, read
+p, user, domain, write
+
+# Role admin -> Resource Access
+p, admin, management, read
+p, admin, management, write
+
+# Role-Role Mapping
+g, admin, user
+
+# User-Role Mapping
+g, Ming, admin
+
+# Resource-Resource Mapping
+g2, metrics, domain
+g2, atomic_metrics, metrics
