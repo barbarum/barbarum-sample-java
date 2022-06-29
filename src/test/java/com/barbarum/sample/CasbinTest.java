@@ -69,6 +69,7 @@ public class CasbinTest {
         assertTrue(enforcer.enforce(user, "domain", "write"));
         assertTrue(enforcer.enforce(user, "metrics", "read"));
         assertTrue(enforcer.enforce(user, "atomic_metrics", "write"));
+        assertFalse(enforcer.enforce("Meimei", "metrics", "write"));
     }
 
     @Test
