@@ -1,7 +1,13 @@
 package com.barbarum.sample.config.security;
 
-import com.barbarum.sample.api.controllers.authentication.LoginController;
+import static com.barbarum.sample.api.controllers.PathConstants.ADMIN;
+import static com.barbarum.sample.api.controllers.PathConstants.SYS_MANAGER;
+import static com.barbarum.sample.api.controllers.PathConstants.HOME;
+import static com.barbarum.sample.api.controllers.PathConstants.LOGIN;
+import static com.barbarum.sample.api.controllers.PathConstants.ROOT;
+import static com.barbarum.sample.api.controllers.PathConstants.WELCOME;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,13 +33,14 @@ public class ServletFormLoginSecurityConfig {
                 .and()
             .httpBasic().disable()
             .authorizeRequests()
-                .antMatchers("/admin", "/admin/", "/admin/**").hasRole("ADMIN")
-                .antMatchers( "/", "/home*", LoginController.LOGIN_PATH).permitAll()
+                .antMatchers(ant(ADMIN), ant(SYS_MANAGER)).hasRole("ADMIN")
+                .antMatchers(HOME, ROOT, WELCOME).permitAll()
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
-                .loginProcessingUrl(LoginController.LOGIN_PATH)
-                .defaultSuccessUrl("/users")
+                .loginProcessingUrl(LOGIN) // Redefine the login processing url for formLogin, use AuthenticationSuccessHandler for login logic control instead.
+                .defaultSuccessUrl(HOME)
+                .permitAll()
                 .and()
             .build();
     }
@@ -55,5 +62,9 @@ public class ServletFormLoginSecurityConfig {
             .roles("USER")
             .build();
         return new InMemoryUserDetailsManager(user, admin);
+    }
+
+    private String ant(String path) {
+        return StringUtils.joinWith("*", path);
     }
 }

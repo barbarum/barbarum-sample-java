@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeController {
     
-    @GetMapping("/")
+    @GetMapping(value = {"/", "/home", "/welcome"})
     public ResponseEntity<String> welcome() {
         return ResponseEntity.ok().build();
     }
+    
 }
