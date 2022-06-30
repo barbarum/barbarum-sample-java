@@ -7,7 +7,18 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.CumulativePermission;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.jdbc.JdbcMutableAclService;
+import org.springframework.security.acls.model.MutableAcl;
+import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +26,9 @@ public class UserPostService {
     
     @Autowired
     private UserPostRepository repository; 
+
+    @Autowired
+    private JdbcMutableAclService aclService;
 
     public List<UserPost> getAll(Principal principal) {
         return this.repository.findAllByAuthor(principal.getName());
@@ -24,13 +38,38 @@ public class UserPostService {
        this.repository.findById(id).ifPresent(this.repository::delete);
     }
 
+    @Transactional
     public Long create(UserPost post, Principal principal) {
         post.setAuthor(principal.getName());
-        return this.repository.save(post).getId();
+        UserPost result = this.repository.save(post);
+
+        MutableAcl acl = createAclIfNotExists(post);
+        Sid sid = new PrincipalSid(principal.getName());
+
+        CumulativePermission permission = new CumulativePermission();
+        permission.set(BasePermission.READ);
+        permission.set(BasePermission.WRITE);
+        permission.set(BasePermission.DELETE);
+        permission.set(BasePermission.ADMINISTRATION);
+        acl.insertAce(acl.getEntries().size(), permission, sid, true);
+        this.aclService.updateAcl(acl);
+
+        return result.getId();
     }
 
     public Optional<UserPost> getUserPost(Long id) {
         return this.repository.findById(id);
     }
 
+    private MutableAcl createAclIfNotExists(UserPost post) {
+        ObjectIdentity oi = new ObjectIdentityImpl(UserPost.class, post.getId());
+        
+        MutableAcl acl = null; 
+        try {
+            acl = (MutableAcl) this.aclService.readAclById(oi);
+        } catch (NotFoundException e) {
+            acl = this.aclService.createAcl(oi);
+        }
+        return acl;
+    }
 }

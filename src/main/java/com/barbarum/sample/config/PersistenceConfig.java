@@ -18,7 +18,7 @@ public class PersistenceConfig {
     // @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource configPrimaryDataSource() {
         return new EmbeddedDatabaseBuilder()
-            .setType(EmbeddedDatabaseType.H2)
+            .setType(EmbeddedDatabaseType.HSQL)
             .addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
             .addScript("createAclSchema.sql")
             .build();

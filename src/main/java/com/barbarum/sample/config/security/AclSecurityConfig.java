@@ -37,9 +37,14 @@ public class AclSecurityConfig {
     }
 
     @Bean
-    public JdbcMutableAclService jdbcMutableAclService(DataSource dataSource, LookupStrategy lookupStrategy,
-            AclCache aclCache) {
-        return new JdbcMutableAclService(dataSource, lookupStrategy, aclCache);
+    public JdbcMutableAclService jdbcMutableAclService(DataSource dataSource, LookupStrategy lookupStrategy, AclCache aclCache) {
+        JdbcMutableAclService service = new JdbcMutableAclService(dataSource, lookupStrategy, aclCache);
+
+        // For mysql only.
+        // service.setClassIdentityQuery("SELECT @@IDENTITY");
+        // service.setSidIdentityQuery("SELECT @@IDENTITY");
+
+        return service;
     }
 
     @Bean
