@@ -1,4 +1,4 @@
-package com.barbarum.sample.api.controllers;
+package com.barbarum.sample.api;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -19,4 +19,8 @@ public class PathConstants {
     public static final String ADMIN = "/admin";
 
     public static final String SYS_MANAGER = "/management";
+
+    public static final String USER_POSTS = "/posts";
+
+    public static final String USER_POST_BY_ID = "/posts/{id}";
 }

@@ -1,6 +1,6 @@
 package com.barbarum.sample.api.controllers.authentication;
 
-import com.barbarum.sample.api.controllers.PathConstants;
+import com.barbarum.sample.api.PathConstants;
 
 import lombok.extern.slf4j.Slf4j;
 

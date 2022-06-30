@@ -1,4 +1,4 @@
-package com.barbarum.sample.service;
+package com.barbarum.sample.loaders;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,11 +17,15 @@ public class CasbinLoader {
 
     @EventListener
     public void onAppLoaded(ContextRefreshedEvent event) {
-        this.enforcer.addPolicy("Ming", "domain", "read");
+        String subject = "Ming";
+        String resource = "domain";
+        String readAction = "read";
+        String writeAction = "write";
+        this.enforcer.addPolicy(subject, resource, readAction);
         this.enforcer.savePolicy();
         
         log.info("Ming to read domain ({}) and write domain ({})."
-            , this.enforcer.enforce("Ming", "domain", "read")
-            , this.enforcer.enforce("Ming", "domain", "write"));
+            , this.enforcer.enforce(subject, resource, readAction)
+            , this.enforcer.enforce(subject, resource, writeAction));
     }
 }
