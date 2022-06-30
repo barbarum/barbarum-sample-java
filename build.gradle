@@ -21,6 +21,10 @@ dependencies {
 
     // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-acl'
+    implementation 'org.springframework.security:spring-security-config'
+    implementation 'org.springframework:spring-context-support'
+    implementation 'net.sf.ehcache:ehcache-core:2.6.11'
     
     // Common Utilities
     implementation 'org.apache.commons:commons-lang3:3.12.0'

@@ -8,7 +8,6 @@ import static com.barbarum.sample.api.PathConstants.SYS_MANAGER;
 import static com.barbarum.sample.api.PathConstants.WELCOME;
 
 import javax.sql.DataSource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +25,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, jsr250Enabled = true)
 public class ServletFormLoginSecurityConfig {
-
+    
     /**
      * Configure security policy for http request.
      */

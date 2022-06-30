@@ -5,6 +5,7 @@ import com.barbarum.sample.persistence.repositories.UserPostRepository;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,10 @@ public class UserPostService {
     public Long create(UserPost post, Principal principal) {
         post.setAuthor(principal.getName());
         return this.repository.save(post).getId();
+    }
+
+    public Optional<UserPost> getUserPost(Long id) {
+        return this.repository.findById(id);
     }
 
 }

@@ -8,6 +8,7 @@ import com.barbarum.sample.service.UserPostService;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,6 +32,11 @@ public class UserPostController {
     @PostMapping(USER_POSTS)
     public Long post(@RequestBody UserPost post, Principal principal) {
         return this.service.create(post, principal);
+    }
+
+    @GetMapping(USER_POST_BY_ID)
+    public Optional<UserPost> getUserPost(@PathVariable("id") Long id) {
+        return this.service.getUserPost(id);
     }
 
     @DeleteMapping(USER_POST_BY_ID)
