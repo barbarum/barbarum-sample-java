@@ -2,8 +2,14 @@ package com.barbarum.sample.config.security;
 
 import com.barbarum.sample.service.acl.Slf4jAuditLogger;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import javax.sql.DataSource;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
@@ -27,6 +33,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import net.sf.ehcache.CacheManager;
 
 @SuppressWarnings("deprecation")
+@Slf4j
 @Configuration
 @EnableAutoConfiguration
 public class AclSecurityConfig {
@@ -39,12 +46,22 @@ public class AclSecurityConfig {
     @Bean
     public JdbcMutableAclService jdbcMutableAclService(DataSource dataSource, LookupStrategy lookupStrategy, AclCache aclCache) {
         JdbcMutableAclService service = new JdbcMutableAclService(dataSource, lookupStrategy, aclCache);
-
-        // For mysql only.
-        // service.setClassIdentityQuery("SELECT @@IDENTITY");
-        // service.setSidIdentityQuery("SELECT @@IDENTITY");
-
+        customizeQueries(service, dataSource);
         return service;
+    }
+
+    private void customizeQueries(JdbcMutableAclService service, DataSource dataSource) {
+        try(Connection connection = dataSource.getConnection()) {
+            String driverClassName = connection.getClass().getName();
+
+            if (StringUtils.containsAnyIgnoreCase(driverClassName, "mysql")) {
+                service.setClassIdentityQuery("SELECT @@IDENTITY");
+                service.setSidIdentityQuery("SELECT @@IDENTITY");
+            }
+
+        } catch (SQLException e) {
+            log.error("Failed to customize JdbcMutableAclService query on DataSource: {}", dataSource);
+        }
     }
 
     @Bean

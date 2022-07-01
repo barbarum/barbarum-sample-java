@@ -25,10 +25,16 @@ dependencies {
     implementation 'org.springframework.security:spring-security-config'
     implementation 'org.springframework:spring-context-support'
     implementation 'net.sf.ehcache:ehcache-core:2.6.11'
+
+    // Authentication
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:2.7.0'
+    // implementation 'org.springframework.security:spring-security-oauth2-authorization-server:0.3.0'
+    implementation 'com.auth0:java-jwt:3.19.2'
     
     // Common Utilities
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.apache.commons:commons-collections4:4.4'
+    implementation 'com.google.guava:guava:31.1-jre'
 
     // Persistence Tier
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
