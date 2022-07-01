@@ -82,6 +82,7 @@ public class JwtConfig {
         return NimbusJwtDecoder.withPublicKey(key).build();
     }
 
+
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter(JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter) {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter(); 
@@ -89,6 +90,10 @@ public class JwtConfig {
         return converter;
     }
 
+    /**
+     * Customize {@linkplain JwtGrantedAuthoritiesConverter} to comply with Spring security builtin {@linkplain org.springframework.security.access.vote.RoleVoter} authorization.
+     * @return
+     */
     @Bean
     public JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter() {
         JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter(); 
