@@ -4,8 +4,10 @@ import com.barbarum.sample.persistence.entities.UserPost;
 import com.barbarum.sample.persistence.repositories.UserPostRepository;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import javax.transaction.Transactional;
 
@@ -40,8 +42,9 @@ public class UserPostService {
 
     @Transactional
     public Long create(UserPost post, Principal principal) {
+
         post.setAuthor(principal.getName());
-        UserPost result = this.repository.save(post);
+        Iterable<UserPost> result = this.repository.saveAll(Arrays.asList(post));
 
         MutableAcl acl = createAclIfNotExists(post);
         Sid sid = new PrincipalSid(principal.getName());
@@ -54,7 +57,10 @@ public class UserPostService {
         acl.insertAce(acl.getEntries().size(), permission, sid, true);
         this.aclService.updateAcl(acl);
 
-        return result.getId();
+        return StreamSupport.stream(result.spliterator(), false)
+            .findFirst()
+            .map(UserPost::getId)
+            .orElse(0L);
     }
 
     public Optional<UserPost> getUserPost(Long id) {

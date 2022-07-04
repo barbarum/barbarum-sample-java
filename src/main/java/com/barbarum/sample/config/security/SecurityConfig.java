@@ -35,7 +35,7 @@ public class SecurityConfig {
     /**
      * Configure security policy for login form style.
      */
-    // @Bean
+    @Bean
     protected SecurityFilterChain configFormLogin(HttpSecurity security) throws Exception {
         return security
             .csrf().disable()
@@ -58,7 +58,7 @@ public class SecurityConfig {
     /**
      * Configure security policy for JWT token by leveraging Oauth2 resource server.
      */
-    @Bean
+    // @Bean
     protected SecurityFilterChain configOauth2AndJwtAuthentication(HttpSecurity security) throws Exception {
         return security
             .csrf().disable()
