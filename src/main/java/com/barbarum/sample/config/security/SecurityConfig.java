@@ -10,7 +10,10 @@ import static com.barbarum.sample.api.PathConstants.WELCOME;
 
 import javax.sql.DataSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -30,12 +33,27 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, jsr250Enabled = true)
+@Slf4j
 public class SecurityConfig {
+
+    @Value("${app.authentication.state.storage.type:SESSION}")
+    private AuthenticationStateStorageType storageType = AuthenticationStateStorageType.SESSION;
+
+    /**
+     * Configure security policy for http request.
+     */
+    @Bean
+    protected SecurityFilterChain configHttpSecurity(HttpSecurity security) throws Exception {
+        log.info("Configure http request security with authentication state storage type: {}", this.storageType);  
+        if (storageType == AuthenticationStateStorageType.SESSION) {
+            return this.configFormLogin(security);
+        }
+        return this.configOauth2AndJwtAuthentication(security);
+    }
 
     /**
      * Configure security policy for login form style.
      */
-    @Bean
     protected SecurityFilterChain configFormLogin(HttpSecurity security) throws Exception {
         return security
             .csrf().disable()
@@ -58,7 +76,6 @@ public class SecurityConfig {
     /**
      * Configure security policy for JWT token by leveraging Oauth2 resource server.
      */
-    // @Bean
     protected SecurityFilterChain configOauth2AndJwtAuthentication(HttpSecurity security) throws Exception {
         return security
             .csrf().disable()
@@ -118,5 +135,10 @@ public class SecurityConfig {
             return;
         }
         manager.createUser(user);
+    }
+
+    public enum AuthenticationStateStorageType {
+        SESSION, 
+        JWT
     }
 }
