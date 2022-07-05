@@ -23,4 +23,6 @@ public class PathConstants {
     public static final String USER_POSTS = "/posts";
 
     public static final String USER_POST_BY_ID = "/posts/{id}";
+
+    public static final String ME = "/me";
 }

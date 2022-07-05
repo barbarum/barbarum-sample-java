@@ -4,6 +4,7 @@ import static com.barbarum.sample.api.PathConstants.ADMIN;
 import static com.barbarum.sample.api.PathConstants.HOME;
 import static com.barbarum.sample.api.PathConstants.LOGIN;
 import static com.barbarum.sample.api.PathConstants.LOGIN_FORM;
+import static com.barbarum.sample.api.PathConstants.ME;
 import static com.barbarum.sample.api.PathConstants.ROOT;
 import static com.barbarum.sample.api.PathConstants.SYS_MANAGER;
 import static com.barbarum.sample.api.PathConstants.WELCOME;
@@ -44,54 +45,46 @@ public class SecurityConfig {
      */
     @Bean
     protected SecurityFilterChain configHttpSecurity(HttpSecurity security) throws Exception {
-        log.info("Configure http request security with authentication state storage type: {}", this.storageType);  
-        if (storageType == AuthenticationStateStorageType.SESSION) {
-            return this.configFormLogin(security);
+        log.info("Configure http request security with authentication state storage type: {}", this.storageType);
+        security
+            .csrf().disable()
+            .cors()
+                .and()
+            .httpBasic().disable()
+            .authorizeRequests()
+                .antMatchers(ant(ADMIN), ant(SYS_MANAGER)).hasRole("ADMIN")
+                .antMatchers(HOME, ROOT, WELCOME, LOGIN, LOGIN_FORM).permitAll()
+                .anyRequest().authenticated()
+                .and(); 
+
+        if (storageType == AuthenticationStateStorageType.JWT) {
+            this.configOauth2AndJwtAuthentication(security);
+        } else {
+            this.configFormLogin(security);
         }
-        return this.configOauth2AndJwtAuthentication(security);
+        return security.build();
     }
 
     /**
      * Configure security policy for login form style.
      */
-    protected SecurityFilterChain configFormLogin(HttpSecurity security) throws Exception {
-        return security
-            .csrf().disable()
-            .cors()
-                .and()
-            .httpBasic().disable()
-            .authorizeRequests()
-                .antMatchers(ant(ADMIN), ant(SYS_MANAGER)).hasRole("ADMIN")
-                .antMatchers(HOME, ROOT, WELCOME).permitAll()
-                .anyRequest().authenticated()
-                .and()
+    protected void configFormLogin(HttpSecurity security) throws Exception {
+        security
             .formLogin()
                 .loginProcessingUrl(LOGIN) // Redefine the login processing url for formLogin, use AuthenticationSuccessHandler for login logic control instead.
-                .defaultSuccessUrl(HOME)
-                .permitAll()
-                .and()
-            .build();
+                .defaultSuccessUrl(ME)
+                .permitAll();
     }
 
     /**
      * Configure security policy for JWT token by leveraging Oauth2 resource server.
      */
-    protected SecurityFilterChain configOauth2AndJwtAuthentication(HttpSecurity security) throws Exception {
-        return security
-            .csrf().disable()
-            .cors()
-                .and()
-            .httpBasic().disable()
+    protected void configOauth2AndJwtAuthentication(HttpSecurity security) throws Exception {
+        security
             .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-            .authorizeRequests()
-                .antMatchers(ant(ADMIN), ant(SYS_MANAGER)).hasRole("ADMIN")
-                .antMatchers(HOME, ROOT, WELCOME, LOGIN, LOGIN_FORM).permitAll()
-                .anyRequest().authenticated()
-                .and()
-            .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-            .build();
+            .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
     }
 
     private String ant(String path) {
