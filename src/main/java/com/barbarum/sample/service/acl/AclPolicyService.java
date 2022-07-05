@@ -74,14 +74,14 @@ public class AclPolicyService {
     }
     
     /**
-     * Validate if the return object class is an JPA entity with a proper identifier, otherwise, {@link InvalidAclEntityException} is thrown.
+     * Validate if the return object class is an JPA entity with a proper identifier, otherwise, {@link InvalidAclPolicyException} is thrown.
      *
      * @param returnObject return object after the annotated (@PostPersistAclPolicy) method invocation.
      */
     private void validateReturnObjectClass(Object returnObject) {
         if (returnObject == null) {
             log.error("Return object must be a non-null entity.");
-            throw new InvalidAclEntityException((Class<Object>) null);
+            throw new InvalidAclPolicyException((Class<Object>) null);
         }
         if (isCollection(returnObject)) {
             Collection<?> c = (Collection<?>) returnObject;
@@ -91,7 +91,7 @@ public class AclPolicyService {
         if (isEntity(returnObject)) {
             return;
         }
-        throw new InvalidAclEntityException(returnObject.getClass());
+        throw new InvalidAclPolicyException(returnObject.getClass());
     }
 
     private boolean isCollection(Object returnObject) {
