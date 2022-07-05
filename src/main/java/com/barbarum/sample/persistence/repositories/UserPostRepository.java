@@ -1,7 +1,7 @@
 package com.barbarum.sample.persistence.repositories;
 
 import com.barbarum.sample.persistence.entities.UserPost;
-import com.barbarum.sample.service.acl.PostAclEntityPersist;
+import com.barbarum.sample.service.acl.PostPersistAclPolicy;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,11 +13,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface UserPostRepository extends PagingAndSortingRepository<UserPost, Long> {
 
     @Override
-    @PostAclEntityPersist
+    @PostPersistAclPolicy
     public <S extends UserPost> S save(S entity);
 
     @Override
-    @PostAclEntityPersist
+    @PostPersistAclPolicy
     public <S extends UserPost> Iterable<S> saveAll(Iterable<S> entities);
 
     @Override

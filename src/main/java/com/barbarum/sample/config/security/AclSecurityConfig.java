@@ -1,6 +1,6 @@
 package com.barbarum.sample.config.security;
 
-import com.barbarum.sample.service.acl.Slf4jAuditLogger;
+import com.barbarum.sample.service.acl.CumulativePermissionGrantingStrategy;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -17,11 +17,13 @@ import org.springframework.context.ApplicationContextException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.AclPermissionEvaluator;
 import org.springframework.security.acls.domain.AclAuthorizationStrategy;
 import org.springframework.security.acls.domain.AclAuthorizationStrategyImpl;
 import org.springframework.security.acls.domain.AuditLogger;
-import org.springframework.security.acls.domain.DefaultPermissionGrantingStrategy;
+import org.springframework.security.acls.domain.ConsoleAuditLogger;
 import org.springframework.security.acls.domain.EhCacheBasedAclCache;
 import org.springframework.security.acls.jdbc.BasicLookupStrategy;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
@@ -79,7 +81,7 @@ public class AclSecurityConfig {
 
     @Bean
     public PermissionGrantingStrategy permissionGrantingStrategy() {
-        return new DefaultPermissionGrantingStrategy(auditLogger());
+        return new CumulativePermissionGrantingStrategy(auditLogger());
     }
 
     @Bean
@@ -90,7 +92,7 @@ public class AclSecurityConfig {
 
     @Bean
     public AuditLogger auditLogger() {
-        return new Slf4jAuditLogger();
+        return new ConsoleAuditLogger();
     }
 
     @Bean

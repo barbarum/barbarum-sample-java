@@ -5,7 +5,7 @@ import org.springframework.beans.BeansException;
 
 public class InvalidAclEntityException extends BeansException {
 
-    private static final String DEFAULT_MESSAGE_FORMAT_PATTERN = "Invalid return object class {}, @PostAclEntityPersist expects either an entity with identifier, or a collection of entities.";
+    private static final String DEFAULT_MESSAGE_FORMAT_PATTERN = "Invalid return object class {}, @PostPersistAclPolicy expects either an entity with identifier, or a collection of entities.";
 
     public InvalidAclEntityException(String msg) {
         super(msg);
