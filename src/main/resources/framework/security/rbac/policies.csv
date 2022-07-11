@@ -1,0 +1,22 @@
+# Lines starting with # are comments, will be ignored at run-time.
+
+# The following definitions have common patterns: 
+#   1. A field with the single character '_' mark as blank.
+#   2. All fields are case-insensitive.
+#   3. The first field identifies different definition type, explain below separately. 
+
+# Role definition as follow: 
+#   ROLE, name, parent
+role, user, _
+role, admin, user
+
+# Policy definition as follow:  
+#   POLICY, ROLE, RESOURCE, OPERATION, EFFECT
+# A policy has the following features or rules: 
+#   1. Role must exist in role definition
+#   2. Resource supports ant matcher, details can be found at https://github.com/spring-projects/spring-security/blob/main/web/src/main/java/org/springframework/security/web/util/matcher/AntPathRequestMatcher.java.
+#   3. Avaliable operations: GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE, _
+#   4. Avaliable effects: GRANT, DENY
+
+policy, admin, /management/**, _, GRANT
+policy, user, **, _, GRANT

@@ -23,7 +23,6 @@ public class CasbinLoader {
         String writeAction = "write";
         this.enforcer.addPolicy(subject, resource, readAction);
         this.enforcer.savePolicy();
-        
         log.info("Ming to read domain ({}) and write domain ({})."
             , this.enforcer.enforce(subject, resource, readAction)
             , this.enforcer.enforce(subject, resource, writeAction));
